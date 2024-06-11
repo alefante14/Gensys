@@ -20,7 +20,22 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+class Renderer {
+public:
+	Renderer ();
+	~Renderer ();
 
+private:
+
+};
+
+Renderer ::Renderer ()
+{
+}
+
+Renderer ::~Renderer ()
+{
+}
 
 void processInput(KeyInput& keyInput, Window& window);
 
