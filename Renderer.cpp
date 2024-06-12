@@ -1,33 +1,8 @@
-#include <glad/glad.h>
-
 #define STB_IMAGE_IMPLEMENTATION
-#include "KeyInput.h"
-#include "Shader.h"
-#include "Window.h"
-#include "Camera.h"
-
-#include "stb_image.h"
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-
 #define GLM_ENABLE_EXPERIMENTAL
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include "Renderer.h"
 
-class Renderer {
-public:
-	Renderer ();
-	~Renderer ();
-
-private:
-
-};
 
 Renderer ::Renderer ()
 {
@@ -37,19 +12,26 @@ Renderer ::~Renderer ()
 {
 }
 
-void processInput(KeyInput& keyInput, Window& window);
+void Renderer::init()
+{
+
+}
+
 
 void mouseMovementCallback(GLFWwindow* window, double xpos, double ypos);
 void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 
+void processInput(KeyInput& keyInput, Window& window);
+
+
+
+
 static unsigned int CreateTexture(const std::string& textureLocation);
 
-// settings
-const unsigned int SCR_WIDTH = 1280;
-const unsigned int SCR_HEIGHT = 720;
 
-Window windowHandler = Window("Window Title", SCR_WIDTH, SCR_HEIGHT);
+
+Window& windowHandler = Window::getInstance(SCR_WIDTH, SCR_HEIGHT, "NEW OPENGL IMP");
 
 
 Camera mainCamera{windowHandler};
@@ -192,12 +174,12 @@ int main()
 	mainCamera.pointCameraToTarget(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	//MOUSE
-	glfwSetInputMode(windowHandler.mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(windowHandler.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
 
 	// render loop
-	while (!glfwWindowShouldClose(windowHandler.mainWindow))
+	while (!glfwWindowShouldClose(windowHandler.getWindow()))
 	{
 		//TIME
 		double currentFrame = glfwGetTime();
@@ -207,12 +189,12 @@ int main()
 
 		// input
 		// -----
-		mainKeyInput.setupKeyInputs(windowHandler.mainWindow);
+		mainKeyInput.setupKeyInputs(windowHandler.getWindow());
 		processInput(mainKeyInput, windowHandler);
 
 		//MOUSE
-		glfwSetCursorPosCallback(windowHandler.mainWindow, mouseMovementCallback);
-		glfwSetScrollCallback(windowHandler.mainWindow, mouseScrollCallback);
+		glfwSetCursorPosCallback(windowHandler.getWindow(), mouseMovementCallback);
+		glfwSetScrollCallback(windowHandler.getWindow(), mouseScrollCallback);
 
 
 
@@ -289,7 +271,7 @@ void processInput(KeyInput& keyInput, Window& window)
 {
 
 	if (keyInput.getKeyState(GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		window.CloseWindow();
+		window.closeWindow();
 	
 
 	if (keyInput.getKeyState(GLFW_KEY_F) == GLFW_REPEAT)
@@ -329,16 +311,7 @@ void processInput(KeyInput& keyInput, Window& window)
 	}
 }
 
-void mouseMovementCallback(GLFWwindow* window, double xpos, double ypos)
-{
-	mainCamera.processMouseMovementInput(window, xpos, ypos);
 
-}
-
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	mainCamera.processMouseScrollInput(window, xoffset, yoffset);
-}
 
 
 unsigned int CreateTexture(const std::string& textureLocation)
@@ -379,7 +352,19 @@ unsigned int CreateTexture(const std::string& textureLocation)
 	return texture;
 }
 
+void mouseMovementCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	mainCamera.processMouseMovementInput(window, xpos, ypos);
 
+
+}
+
+void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	mainCamera.processMouseScrollInput(window, xoffset, yoffset);
+
+
+}
 
 
 

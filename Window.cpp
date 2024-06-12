@@ -2,37 +2,70 @@
 
 
 
-void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+Window& Window::getInstance(unsigned int width, unsigned int height, const std::string& title)
 {
-	glViewport(0, 0, width, height);
+	static Window instance(width, height, title);
+	return instance;
 }
 
-Window::Window(const char* title, int width, int height) : SCR_WIDTH(width), SCR_HEIGHT(height)
+void Window::closeWindow() const
+{
+	return glfwSetWindowShouldClose(mWindow, true);
+}
+
+
+Window::Window(unsigned int width, unsigned int height, const std::string& title) : SCR_WIDTH(width), SCR_HEIGHT(height), mTitle(title), mWindow(nullptr)
+{
+	if (!init())
+	{
+		std::cerr << "Failed to initialize GLFW window " << std::endl;
+	}
+}
+
+
+Window::~Window()
+{
+	glfwSetWindowShouldClose(mWindow, true);
+	if (mWindow) {
+		glfwDestroyWindow(mWindow);
+		mWindow = nullptr;
+	}
+	glfwTerminate();
+}
+
+
+bool Window::init()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	mainWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL", NULL, NULL);
-	if (mainWindow == NULL)
+	mWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, mTitle.c_str(), NULL, NULL);
+	if (mWindow == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
+		return false;
 	}
-	glfwMakeContextCurrent(mainWindow);
-	glfwSetFramebufferSizeCallback(mainWindow, Window::framebuffer_size_callback);
+	glfwMakeContextCurrent(mWindow);
+	glfwSetFramebufferSizeCallback(mWindow, Window::framebuffer_size_callback);
 
-	//FINIRE CONSTRUCTOR QUI
+	return true;
 }
 
-void Window::swapBuffer()
+
+void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	glfwSwapBuffers(mainWindow);
+	glViewport(0, 0, width, height);
 }
 
-void Window::CloseWindow()
+void Window::swapBuffer() const
 {
-	glfwSetWindowShouldClose(mainWindow, true);
+	glfwSwapBuffers(mWindow);
 }
+
+
+
+
 

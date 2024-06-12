@@ -3,22 +3,44 @@
 #include <iostream>
 
 //Do we make it external? (look up for Singleton pattern)
-class Window
-{
+
+
+
+class Window{
+public:
+
+	static Window& getInstance(unsigned int width = 800, unsigned int height = 600, const std::string& title = "OpenGL Renderer");
+
+	void closeWindow() const;
+
+
+
+	void swapBuffer() const;
+	int getWidth() const { return SCR_WIDTH; }
+	int getHeight() const { return SCR_HEIGHT; }
+	GLFWwindow* getWindow() const { return mWindow; }
+
+
 private:
+	Window(unsigned int width, unsigned int height, const std::string& title);
+	~Window();
 
+	Window(const Window&) = delete;
+	Window& operator=(const Window&) = delete;
 
+	bool init();
+	
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-public:
+
+
+
+	GLFWwindow* mWindow;
+
 	const unsigned int SCR_WIDTH;
 	const unsigned int SCR_HEIGHT;
-	GLFWwindow* mainWindow;
+	std::string mTitle;
 
-	Window(const char* title, int width, int height);
 
-	void swapBuffer();
-
-	void CloseWindow();
 };
 

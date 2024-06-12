@@ -32,7 +32,7 @@ const float MAX_FOV = 45.0f;
 class Camera
 {
 private:
-	const Window& linkedWindow;
+	Window& linkedWindow;
 
 	glm::vec3 mFront;
 	glm::vec3 mUp;
@@ -41,8 +41,8 @@ private:
 	double mPitch;
 	
 	bool firstMouse = true;
-	double lastX = static_cast<double>(linkedWindow.SCR_WIDTH) / 2;
-	double lastY = static_cast<double>(linkedWindow.SCR_HEIGHT) / 2;
+	double lastX = static_cast<double>(linkedWindow.getWidth()) / 2;
+	double lastY = static_cast<double>(linkedWindow.getHeight()) / 2;
 
 
 public:
@@ -55,7 +55,7 @@ public:
 
 	//Argoument are : (Position, Front, Up, yaw, pitch, speed, mouseSensitivity, zoom)
 	Camera(
-		const Window& window,
+		Window& window,
 		glm::vec3 Position = glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3 Direction = glm::vec3(0.0f, 0.0f, 0.0f),
 		float yaw = YAW, float pitch = PITCH,
 		float speed = SPEED, float mouseSensitivity = SENSITIVITY, float fov = FOV

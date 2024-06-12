@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera(
-	const Window& window,
+	Window& window,
 	glm::vec3 Position, glm::vec3 Front, glm::vec3 Up, glm::vec3 direction,
 	float yaw, float pitch,
 	float speed, float mouseSensitivity, float fov) 
@@ -113,11 +113,11 @@ glm::mat4 Camera::getViewMatrix()
 
 glm::mat4 Camera::getProjectionMatrix()
 {
-	return glm::perspective(glm::radians(mFov), static_cast<float>(linkedWindow.SCR_WIDTH) / static_cast<float>(linkedWindow.SCR_HEIGHT), 0.1f, 100.0f);
+	return glm::perspective(glm::radians(mFov), static_cast<float>(linkedWindow.getWidth()) / static_cast<float>(linkedWindow.getHeight()), 0.1f, 100.0f);
 }
 
 //NOT WORKING
 glm::mat4 Camera::getOrthoProjectionMatrix()
 {
-	return glm::ortho(0.0f, static_cast<float>(linkedWindow.SCR_WIDTH), 0.0f, static_cast<float>(linkedWindow.SCR_HEIGHT), 0.1f, 100.0f);
+	return glm::ortho(0.0f, static_cast<float>(linkedWindow.getWidth()), 0.0f, static_cast<float>(linkedWindow.getHeight()), 0.1f, 100.0f);
 }
