@@ -72,14 +72,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\SenorMonopoly\Projects\OpenGL\thirdPartyLibraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\SenorMonopoly\Projects\OpenGL\thirdPartyLibraries\lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\Users\SenorMonopoly\Projects\OpenGL\thirdPartyLibraries;$(SourcePath)</SourcePath>
+    <IncludePath>C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\thirdPartyLibraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\thirdPartyLibraries\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\thirdPartyLibraries;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\SenorMonopoly\Projects\OpenGL\thirdPartyLibraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\SenorMonopoly\Projects\OpenGL\thirdPartyLibraries\lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\Users\SenorMonopoly\Projects\OpenGL\thirdPartyLibraries;$(SourcePath)</SourcePath>
+    <IncludePath>C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\thirdPartyLibraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\thirdPartyLibraries\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\thirdPartyLibraries;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,8 +140,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\glad\src\glad.c" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Dependencies\glad\src\glad.c" />
     <ClCompile Include="Gensys.cpp" />
     <ClCompile Include="KeyInput.cpp" />
     <ClCompile Include="Renderer.cpp" />

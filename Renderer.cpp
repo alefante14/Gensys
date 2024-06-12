@@ -33,7 +33,6 @@ static unsigned int CreateTexture(const std::string& textureLocation);
 
 Window& windowHandler = Window::getInstance(SCR_WIDTH, SCR_HEIGHT, "NEW OPENGL IMP");
 
-
 Camera mainCamera{windowHandler};
 
 KeyInput mainKeyInput = KeyInput({ GLFW_KEY_ESCAPE, GLFW_KEY_RIGHT, GLFW_KEY_LEFT, GLFW_KEY_DOWN, GLFW_KEY_UP, GLFW_KEY_F, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_SPACE, GLFW_KEY_C });
@@ -45,11 +44,6 @@ double lastFrame = 0.0f;
 
 int main()
 {
-
-
-
-
-
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -127,11 +121,41 @@ int main()
 	};
 
 
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) Objects, and then configure vertex attributes(s).
+	/*
+		// create object
+		unsigned int objectId = 0;
+		glGenObject(1, &objectId);
+		// bind/assign object to context
+		glBindObject(GL_WINDOW_TARGET, objectId);
+		// set options of object currently bound to GL_WINDOW_TARGET
+		glSetObjectOption(GL_WINDOW_TARGET, GL_OPTION_WINDOW_WIDTH,  800);
+		glSetObjectOption(GL_WINDOW_TARGET, GL_OPTION_WINDOW_HEIGHT, 600);
+		// set context target back to default
+		glBindObject(GL_WINDOW_TARGET, 0);
+	
+	****************************************************************************************************************************************************************************
+
+	VAO = Vertex Array Object
+		Raggruppa la configurazione dei vertex attributes e i buffer bindings
+		Si genera con glGenVertexArrays, si binda con glBindVertexArray e si elimina con glDeleteVertexArrays
+
+	VBO = Vertex Buffer Object
+		Un buffer nella GPU che mantiene i vertex data che verranno usati dal vertex shader
+		Si binda con glBindBuffer, poi si usa glBufferData per mandare i dati alla GPU e si elimina con glDeleteBuffers
+
+	EBO = Element Buffer Object
+		Usato per mantenere gli indici che referenziaano i vertici in un VBO.
+
+		Si genera con glGenBuffers, si binda con glBindBuffer e si eleimina con glDeleteBuffers
+
+	*/
+
 
 	unsigned int  VAO; //Vertex Array Object
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
+
 
 
 	unsigned int VBO;  //Vertex Buffer Object
