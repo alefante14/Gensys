@@ -70,5 +70,8 @@
     <None Include="Shaders\Basic.shader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\light.shader">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\Basic.shader" />
+    <None Include="Shaders\light.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

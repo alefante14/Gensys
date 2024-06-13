@@ -52,11 +52,17 @@ int main()
 	}
 
 	//taking and compiling shaders
-	ShaderProgramSource source = Shader::ParseShader("Shaders/Basic.shader");
-	Shader shaderProgram = Shader(source.VertexSource, source.FragmentSource);
+	
+
+	ShaderProgramSource textureSource = Shader::parse("Shaders/Basic.shader");
+	Shader textureShaderProgram = Shader(textureSource.VertexSource, textureSource.FragmentSource);
+
+	ShaderProgramSource lightSource = Shader::parse("Shaders/light.shader");
+	Shader lightShaderProgram = Shader(lightSource.VertexSource, lightSource.FragmentSource);
+
 
 	//cube
-	float positions[] = {
+	float cubeVertices[] = {
 		//positions				colors			texCoord
 		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
@@ -101,6 +107,19 @@ int main()
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f
 	};
 
+	float pyramidVertices[] = {
+		// Positions          // Colors
+		// Base
+		-0.5f,  0.0f, -0.5f,  1.0f, 0.0f, 0.0f,
+		 0.5f,  0.0f, -0.5f,  0.0f, 1.0f, 0.0f,
+		 0.5f,  0.0f,  0.5f,  0.0f, 0.0f, 1.0f,
+		-0.5f,  0.0f,  0.5f,  1.0f, 1.0f, 0.0f,
+		// Apex
+		 0.0f,  0.8f,  0.0f,  1.0f, 0.0f, 1.0f
+	};
+
+
+
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -114,12 +133,28 @@ int main()
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
+	glm::vec3 pyramidPositions[] = {
+	glm::vec3(10.0f,  0.0f,  0.0f)
+	};
+
 	//Indices MUST be unsigned 
-	unsigned int indices[] = {  // note that we start from 0!
+	unsigned int cubeIndices[] = {  // note that we start from 0!
 		0, 1, 2,   // first triangle
 		2, 0, 3    // second triangle
 	};
 
+
+	unsigned int pyramidIndices[] = {
+		// Base face (quadrilateral)
+		0, 1, 2,   // Triangle 1 of the base (1-2-3)
+		0, 2, 3,   // Triangle 2 of the base (1-3-4)
+
+		// Side faces (triangles)
+		0, 1, 4,   // Face 1 (1-2-5)
+		1, 2, 4,   // Face 2 (2-3-5)
+		2, 3, 4,   // Face 3 (3-4-5)
+		3, 0, 4    // Face 4 (4-1-5)
+	};
 
 	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) Objects, and then configure vertex attributes(s).
 	/*
@@ -166,7 +201,9 @@ int main()
 	GL_STATIC_DRAW: the data is set only once and used many times.
 	GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
 	*/
-	glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);  //copy data into buffer
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);  //copy data into buffer
+
+	
 	//We are describing the layout of our vertex attributes
 	//Positions
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -178,20 +215,54 @@ int main()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
+	// WORK HERE ********************************************************************************************************************************************************
+	
+	unsigned int lightVAO;
+	glGenVertexArrays(1, &lightVAO);
+	glBindVertexArray(lightVAO);
+
+	unsigned int lightVBO;
+	glGenBuffers(1, &lightVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(pyramidVertices), pyramidVertices, GL_STATIC_DRAW);  //copy data into buffer
+
+
+	//We are describing the layout of our vertex attributes
+	//Positions
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	//Colors
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	unsigned int lightEBO;  //Element Buffer Object
+	glGenBuffers(1, &lightEBO);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(pyramidIndices), pyramidIndices, GL_STATIC_DRAW);
+
+	//reset
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	
+	// END WORK HERE ********************************************************************************************************************************************************
+
+
 	unsigned int EBO;  //Element Buffer Object
 	glGenBuffers(1, &EBO);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 	stbi_set_flip_vertically_on_load(true);  //to flip up every import
 	unsigned int containerTexture = CreateTexture("Textures/wall.jpg");
 	unsigned int faceTexture = CreateTexture("Textures/bird.png");
 
 
-	glUseProgram(shaderProgram.GetID()); // don't forget to activate the shader before setting uniforms!  
-	glUniform1i(glGetUniformLocation(shaderProgram.GetID(), "ourTexture1"), 0); //set it manually
-	glUniform1i(glGetUniformLocation(shaderProgram.GetID(), "ourTexture2"), 1);
+	textureShaderProgram.use(); // don't forget to activate the shader before setting uniforms!  
+	glUniform1i(glGetUniformLocation(textureShaderProgram.GetID(), "ourTexture1"), 0); //set it manually
+	glUniform1i(glGetUniformLocation(textureShaderProgram.GetID(), "ourTexture2"), 1);
 
 
 	//view matrix to move the camera
@@ -226,8 +297,6 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  //we are using a depth buffer, we need to clear it before next iteration
 
 
-
-
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -238,24 +307,11 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, faceTexture);
 
 
-		glUseProgram(shaderProgram.GetID());  //updating uniform requires to first use the program
+		textureShaderProgram.use();		
+		textureShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
+		textureShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
 
-
-		// note that we're translating the scene in the reverse direction of where we want to move
-
-		
-
-		unsigned int modelMatrix = glGetUniformLocation(shaderProgram.GetID(), "model");
-		unsigned int viewMatrix = glGetUniformLocation(shaderProgram.GetID(), "view");
-		unsigned int projectionMatrix = glGetUniformLocation(shaderProgram.GetID(), "projection");
-
-
-		//glm::mat4 view = mainCamera.getViewMatrix();
-
-		glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, glm::value_ptr(mainCamera.getViewMatrix()));
-		glUniformMatrix4fv(projectionMatrix, 1, GL_FALSE, glm::value_ptr(mainCamera.getProjectionMatrix()));
-		//glUniformMatrix4fv(projectionMatrix, 1, GL_FALSE, glm::value_ptr(mainCamera.getOrthoProjectionMatrix()));
-
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO);
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 
 		for (unsigned int i = 0; i < 10; i++)
@@ -263,17 +319,39 @@ int main()
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f * (i + 1)), glm::vec3(0.5f, 1.0f, 0.0f));  //rotating on X-Axis
-			glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, glm::value_ptr(model));
+
+			textureShaderProgram.setUniformMatrix4("model", model);
+
+
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
+
+		//WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE 
+		lightShaderProgram.use();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightVBO);
+		glBindVertexArray(lightVAO);
+		glm::mat4 pyramidModel = glm::mat4(1.0f);
+		pyramidModel = glm::translate(pyramidModel, pyramidPositions[0]);
+		pyramidModel = glm::rotate(pyramidModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
+
+
+		lightShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
+		lightShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
+		lightShaderProgram.setUniformMatrix4("model", pyramidModel);
+
+		//glDrawArrays(GL_TRIANGLES, 0, 5);
+		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);  //faster
+
+		glBindVertexArray(0);
+		//END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE 
+
 		/*
 		* The glDrawElements function takes its indices from the EBO currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
 		* This means we have to bind the corresponding EBO each time we want to render an object with indices which again is a bit cumbersome.
 		*/
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,VBO);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
