@@ -57,65 +57,83 @@ int main()
 	ShaderProgramSource textureSource = Shader::parse("Shaders/Basic.shader");
 	Shader textureShaderProgram = Shader(textureSource.VertexSource, textureSource.FragmentSource);
 
+	ShaderProgramSource lightReflectSource = Shader::parse("Shaders/lightReflect.shader");
+	Shader lightReflectShaderProgram = Shader(lightReflectSource.VertexSource, lightReflectSource.FragmentSource);
+
 	ShaderProgramSource lightSource = Shader::parse("Shaders/light.shader");
 	Shader lightShaderProgram = Shader(lightSource.VertexSource, lightSource.FragmentSource);
 
 
 	//cube
+	
 	float cubeVertices[] = {
-		//positions				colors			texCoord
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+		//positions				colors			texCoord			normals
+		-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	 0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, -1.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
 
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	-1.0f,  0.0f,  0.0f,
 
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	1.0f,  0.0f,  0.0f,
 
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f, -1.0f,  0.0f,
 
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f,  1.0f,  0.0f
 	};
+
+	/*
+	float cubeVertices[] = {
+		// positions           // colors          // texture coords
+		-0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 1.0f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+	};
+	*/
 
 	float pyramidVertices[] = {
 		// Positions          // Colors
 		// Base
-		-0.5f,  0.0f, -0.5f,  1.0f, 0.0f, 0.0f,
-		 0.5f,  0.0f, -0.5f,  0.0f, 1.0f, 0.0f,
-		 0.5f,  0.0f,  0.5f,  0.0f, 0.0f, 1.0f,
+		-0.5f,  0.0f, -0.5f,  1.0f, 1.0f, 0.0f,
+		 0.5f,  0.0f, -0.5f,  1.0f, 1.0f, 0.0f,
+		 0.5f,  0.0f,  0.5f,  1.0f, 1.0f, 0.0f,
 		-0.5f,  0.0f,  0.5f,  1.0f, 1.0f, 0.0f,
 		// Apex
-		 0.0f,  0.8f,  0.0f,  1.0f, 0.0f, 1.0f
+		 0.0f,  0.8f,  0.0f,  0.0f, 1.0f, 0.0f
 	};
 
 
@@ -134,13 +152,18 @@ int main()
 	};
 
 	glm::vec3 pyramidPositions[] = {
-	glm::vec3(10.0f,  0.0f,  0.0f)
+	glm::vec3(10.0f,  0.0f,  0.0f),
+	glm::vec3(6.0f,  0.0f,  0.0f)
 	};
 
 	//Indices MUST be unsigned 
-	unsigned int cubeIndices[] = {  // note that we start from 0!
-		0, 1, 2,   // first triangle
-		2, 0, 3    // second triangle
+	unsigned int cubeIndices[] = {
+		0, 1, 2, 2, 3, 0, // front face
+		4, 5, 6, 6, 7, 4, // back face
+		0, 1, 5, 5, 4, 0, // bottom face
+		2, 3, 7, 7, 6, 2, // top face
+		0, 3, 7, 7, 4, 0, // left face
+		1, 2, 6, 6, 5, 1  // right face
 	};
 
 
@@ -206,14 +229,26 @@ int main()
 	
 	//We are describing the layout of our vertex attributes
 	//Positions
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	//Colors
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	//Texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+	//Normals
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+
+	unsigned int EBO;  //Element Buffer Object
+	glGenBuffers(1, &EBO);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
 
 	// WORK HERE ********************************************************************************************************************************************************
 	
@@ -249,11 +284,7 @@ int main()
 	// END WORK HERE ********************************************************************************************************************************************************
 
 
-	unsigned int EBO;  //Element Buffer Object
-	glGenBuffers(1, &EBO);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 	stbi_set_flip_vertically_on_load(true);  //to flip up every import
 	unsigned int containerTexture = CreateTexture("Textures/wall.jpg");
@@ -323,27 +354,69 @@ int main()
 			textureShaderProgram.setUniformMatrix4("model", model);
 
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-		glBindVertexArray(0);
+
+		}
+
+		//glBindVertexArray(0);
 
 		//WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE 
-		lightShaderProgram.use();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightVBO);
-		glBindVertexArray(lightVAO);
-		glm::mat4 pyramidModel = glm::mat4(1.0f);
-		pyramidModel = glm::translate(pyramidModel, pyramidPositions[0]);
-		pyramidModel = glm::rotate(pyramidModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
 
+		//draw light cube
+
+		lightShaderProgram.use();
 
 		lightShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
 		lightShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
-		lightShaderProgram.setUniformMatrix4("model", pyramidModel);
+
+		glm::mat4 cubeModel = glm::mat4(1.0f);
+		cubeModel = glm::translate(cubeModel, glm::vec3(8.0f,0.0f, -2.0f));
+		cubeModel = glm::scale(cubeModel, glm::vec3(0.2f));
+
+
+		lightShaderProgram.setUniformMatrix4("model", cubeModel);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);  //drawing cube
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+		//Draw light reflect meshes
+		lightReflectShaderProgram.use();
+
+		lightReflectShaderProgram.setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
+		lightReflectShaderProgram.setUniformVec3("lightPos",8.0f, 0.0f, -2.0f);  //same pos as light cube
+
+		lightReflectShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
+		lightReflectShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightVBO);
+
+		//draw cube reflecting lights
+		cubeModel = glm::mat4(1.0f);
+		cubeModel = glm::translate(cubeModel, glm::vec3(9.0f, 1.0f, -3.0f));
+		cubeModel = glm::scale(cubeModel, glm::vec3(0.5f));
+
+
+		lightReflectShaderProgram.setUniformMatrix4("model", cubeModel);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);  //drawing cube
+
+		glBindVertexArray(lightVAO);
+
+		//Draw pyramids
+		for (unsigned int i = 0; i < 2; i++)
+		{
+			glm::mat4 pyramidModel = glm::mat4(1.0f);
+			pyramidModel = glm::translate(pyramidModel, pyramidPositions[i]);
+			pyramidModel = glm::rotate(pyramidModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
+			lightReflectShaderProgram.setUniformMatrix4("model", pyramidModel);
+		
+			glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);  //faster
+		}
+
 
 		//glDrawArrays(GL_TRIANGLES, 0, 5);
-		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);  //faster
 
 		glBindVertexArray(0);
 		//END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE 
