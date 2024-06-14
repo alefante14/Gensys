@@ -137,7 +137,6 @@ int main()
 	};
 
 
-
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -178,6 +177,7 @@ int main()
 		2, 3, 4,   // Face 3 (3-4-5)
 		3, 0, 4    // Face 4 (4-1-5)
 	};
+
 
 	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) Objects, and then configure vertex attributes(s).
 	/*
@@ -343,7 +343,7 @@ int main()
 		textureShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO);
-		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+		glBindVertexArray(VAO);
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
@@ -363,8 +363,6 @@ int main()
 		//glBindVertexArray(0);
 
 		//WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE 
-
-		//ROTATE NORMALS!!!
 
 
 		//draw light cube

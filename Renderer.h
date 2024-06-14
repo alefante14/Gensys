@@ -5,18 +5,14 @@
 #include "Shader.h"
 #include "Window.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 #include "stb_image.h"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
 
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+#include "CommonHeaders.h"
 
 
 // settings
