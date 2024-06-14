@@ -68,12 +68,12 @@ int main()
 	
 	float cubeVertices[] = {
 		//positions				colors			texCoord			normals
-		-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	 0.0f,  0.0f, -1.0f,
 		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
 		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, -1.0f,
 
 		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
 		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
@@ -364,6 +364,9 @@ int main()
 
 		//WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE 
 
+		//ROTATE NORMALS!!!
+
+
 		//draw light cube
 
 		lightShaderProgram.use();
@@ -371,12 +374,12 @@ int main()
 		lightShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
 		lightShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
 
-		glm::mat4 cubeModel = glm::mat4(1.0f);
-		cubeModel = glm::translate(cubeModel, glm::vec3(8.0f,0.0f, -2.0f));
-		cubeModel = glm::scale(cubeModel, glm::vec3(0.2f));
 
+		glm::mat4 lightCubeModel = glm::mat4(1.0f);
+		lightCubeModel = glm::translate(lightCubeModel, glm::vec3(8.0f,0.0f, -2.0f));
+		lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2f));
 
-		lightShaderProgram.setUniformMatrix4("model", cubeModel);
+		lightShaderProgram.setUniformMatrix4("model", lightCubeModel);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);  //drawing cube
 		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -386,6 +389,7 @@ int main()
 
 		lightReflectShaderProgram.setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
 		lightReflectShaderProgram.setUniformVec3("lightPos",8.0f, 0.0f, -2.0f);  //same pos as light cube
+		lightReflectShaderProgram.setUniformVec3("viewPos", mainCamera.getPosition()); 
 
 		lightReflectShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
 		lightReflectShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
@@ -393,10 +397,10 @@ int main()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightVBO);
 
 		//draw cube reflecting lights
-		cubeModel = glm::mat4(1.0f);
+		glm::mat4 cubeModel = glm::mat4(1.0f);
 		cubeModel = glm::translate(cubeModel, glm::vec3(9.0f, 1.0f, -3.0f));
 		cubeModel = glm::scale(cubeModel, glm::vec3(0.5f));
-
+		cubeModel = glm::rotate(cubeModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
 
 		lightReflectShaderProgram.setUniformMatrix4("model", cubeModel);
 

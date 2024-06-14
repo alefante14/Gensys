@@ -39,6 +39,8 @@ public:
 
 	void setUniformVec3(const char* name, float x, float y, float z);
 
+	void setUniformVec3(const char* name, glm::vec3 vector);
+
 	void setUniformMatrix4(const char* name, glm::mat4 matrix);
 
 
