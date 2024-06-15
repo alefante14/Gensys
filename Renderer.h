@@ -27,4 +27,7 @@ public:
 
 private:
 	void init();
+	std::map<Mesh, Shader> meshShaderMap;
+
+
 };

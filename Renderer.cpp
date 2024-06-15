@@ -3,21 +3,6 @@
 
 #include "Renderer.h"
 
-
-Renderer ::Renderer ()
-{
-}
-
-Renderer ::~Renderer ()
-{
-}
-
-void Renderer::init()
-{
-
-}
-
-
 void mouseMovementCallback(GLFWwindow* window, double xpos, double ypos);
 void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
@@ -30,7 +15,7 @@ static unsigned int CreateTexture(const std::string& textureLocation);
 
 Window& windowHandler = Window::getInstance(SCR_WIDTH, SCR_HEIGHT, "NEW OPENGL IMP");
 
-Camera mainCamera{windowHandler};
+Camera mainCamera{ windowHandler };
 
 KeyInput mainKeyInput = KeyInput({ GLFW_KEY_ESCAPE, GLFW_KEY_RIGHT, GLFW_KEY_LEFT, GLFW_KEY_DOWN, GLFW_KEY_UP, GLFW_KEY_F, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_SPACE, GLFW_KEY_C });
 
@@ -39,18 +24,16 @@ KeyInput mainKeyInput = KeyInput({ GLFW_KEY_ESCAPE, GLFW_KEY_RIGHT, GLFW_KEY_LEF
 double deltaTime = 0.0f;
 double lastFrame = 0.0f;
 
-int main()
+
+Renderer::Renderer()
 {
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
+		throw std::runtime_error("Failed to initialize GLAD");
 	}
 
 	//taking and compiling shaders
-	
-
 	ShaderProgramSource textureSource = Shader::parse("Shaders/Basic.shader");
 	Shader textureShaderProgram = Shader(textureSource.VertexSource, textureSource.FragmentSource);
 
@@ -62,7 +45,7 @@ int main()
 
 
 	//cube
-	
+
 	float cubeVertices[] = {
 		//positions				colors			texCoord			normals
 		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
@@ -188,7 +171,7 @@ int main()
 		glSetObjectOption(GL_WINDOW_TARGET, GL_OPTION_WINDOW_HEIGHT, 600);
 		// set context target back to default
 		glBindObject(GL_WINDOW_TARGET, 0);
-	
+
 	****************************************************************************************************************************************************************************
 
 	VAO = Vertex Array Object
@@ -223,7 +206,7 @@ int main()
 	*/
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);  //copy data into buffer
 
-	
+
 	//We are describing the layout of our vertex attributes
 	//Positions
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
@@ -247,8 +230,7 @@ int main()
 
 	glBindVertexArray(0);
 
-	// WORK HERE ********************************************************************************************************************************************************
-	
+
 	unsigned int lightVAO;
 	glGenVertexArrays(1, &lightVAO);
 	glBindVertexArray(lightVAO);
@@ -277,7 +259,14 @@ int main()
 	//reset
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+
+	// WORK HERE ********************************************************************************************************************************************************
+	//create pyramid mesh
 	
+
+
+
 	// END WORK HERE ********************************************************************************************************************************************************
 
 
@@ -298,6 +287,19 @@ int main()
 
 	//MOUSE
 	glfwSetInputMode(windowHandler.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	init();
+}
+
+Renderer ::~Renderer ()
+{
+}
+
+
+
+
+void Renderer::init()
+{
 
 
 

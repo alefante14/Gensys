@@ -9,15 +9,15 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     setupMesh();
 }
 
-void Mesh::draw(Shader& shader, bool drawElements)
+void Mesh::draw(Shader& shader, bool drawArrays)
 {
-
-
 	glBindVertexArray(mVAO);
-	if(drawElements)
-		glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
+
+	if(drawArrays)
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(mVertices.size()));
 	else
-		glDrawArrays(GL_TRIANGLES, 0, mVertices.size()); 
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mIndices.size()), GL_UNSIGNED_INT, 0);
+
 	glBindVertexArray(0);
 }
 
