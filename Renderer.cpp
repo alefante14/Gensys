@@ -24,9 +24,6 @@ void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 void processInput(KeyInput& keyInput, Window& window);
 
-
-
-
 static unsigned int CreateTexture(const std::string& textureLocation);
 
 

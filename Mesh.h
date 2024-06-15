@@ -22,7 +22,7 @@ class Mesh {
 		std::vector<Texture>		mTextures;
 
 		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-		void Draw(Shader& shader, bool drawElements);
+		void draw(Shader& shader, bool drawElements);
 	private:
 		//  render data
 		unsigned int mVAO, mVBO, mEBO;
