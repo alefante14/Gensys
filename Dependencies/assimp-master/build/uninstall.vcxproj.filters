@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\Dependencies\assimp-master\build\CMakeFiles\51f205237e796a094a4deb00ebe0144a\uninstall.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\Dependencies\assimp-master\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\SenorMonopoly\Projects\OpenGL\Code\Gensys\Gensys1.0\Dependencies\assimp-master\build\CMakeFiles\uninstall" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{ABF1A3C6-0EED-3480-8549-255CB7B9E3E6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

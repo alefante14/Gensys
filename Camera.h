@@ -44,10 +44,11 @@ private:
 	double lastX = static_cast<double>(linkedWindow.getWidth()) / 2;
 	double lastY = static_cast<double>(linkedWindow.getHeight()) / 2;
 
-
-public:
 	glm::vec3 mPosition;
 	glm::vec3 mDirection;
+
+public:
+
 
 	float mSpeed;
 	float mMouseSensitivity;
@@ -70,6 +71,8 @@ public:
 
 	void AddYawn(double yawnInDegrees);
 	void AddPitch(double pitchInDegrees);
+
+	inline glm::vec3 getPosition() { return mPosition; };
 
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();

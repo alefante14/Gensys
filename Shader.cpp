@@ -1,11 +1,12 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include "Shader.h"
 
 Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
 {
-	shaderID = CreateShader(vertexShader, fragmentShader);
+	shaderID = create(vertexShader, fragmentShader);
 }
 
-ShaderProgramSource Shader::ParseShader(const std::string& filepath)
+ShaderProgramSource Shader::parse(const std::string& filepath)
 {
 	std::ifstream stream(filepath);
 
@@ -42,7 +43,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 	return { ss[0].str(), ss[1].str() };
 }
 
-unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
+unsigned int Shader::compile(unsigned int type, const std::string& source)
 {
 	unsigned int id;
 	id = glCreateShader(type);
@@ -76,14 +77,40 @@ unsigned int Shader::GetID()
 	return shaderID;
 }
 
+void Shader::use()
+{
+	glUseProgram(GetID());  //updating uniform requires to first use the program
+
+}
+
+void Shader::setUniformVec3(const char* name, float x, float y, float z)
+{
+	unsigned int vectorID = glGetUniformLocation(GetID(), name);
+	glUniform3f(vectorID, x, y, z);
+}
+
+void Shader::setUniformVec3(const char* name, glm::vec3 vector)
+{
+	unsigned int vectorID = glGetUniformLocation(GetID(), name);
+	glUniform3f(vectorID, vector.x, vector.y, vector.z);
+}
+
+
+void Shader::setUniformMatrix4(const char* name, glm::mat4 matrix)
+{
+	unsigned int matrixID = glGetUniformLocation(GetID(), name);
+	glUniformMatrix4fv(matrixID, 1, GL_FALSE, glm::value_ptr(matrix));
+
+}
+
 
 //Privates
 
-unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+unsigned int Shader::create(const std::string& vertexShader, const std::string& fragmentShader)
 {
 	unsigned int program = glCreateProgram();
-	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+	unsigned int vs = compile(GL_VERTEX_SHADER, vertexShader);
+	unsigned int fs = compile(GL_FRAGMENT_SHADER, fragmentShader);
 
 	glAttachShader(program, vs);
 	glAttachShader(program, fs);
