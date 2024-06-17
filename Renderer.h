@@ -20,6 +20,8 @@
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
+
+
 class Renderer
 {
 public:
@@ -29,9 +31,16 @@ public:
 private:
 	void init();
 
-	std::map<std::string, Mesh> loadedMeshes;
+public:
+	KeyInput mainKeyInput;
+	Window& windowHandler = Window::getInstance(SCR_WIDTH, SCR_HEIGHT, "NEW OPENGL IMP");
+	Camera mainCamera;
 
+private:
+	std::map<std::string, Mesh> loadedMeshes;
 	std::map<std::string, Shader> loadedShaders;
+
+
 
 	std::vector<glm::vec3> pyramidPositions = {
 		glm::vec3(10.0f,  0.0f,  0.0f),

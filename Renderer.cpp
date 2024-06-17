@@ -2,30 +2,24 @@
 
 
 
-void mouseMovementCallback(GLFWwindow* window, double xpos, double ypos);
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
-
-void processInput(KeyInput& keyInput, Window& window);
+void processInput(KeyInput& keyInput, Window& window, Camera& cam);
 
 static unsigned int CreateTexture(const std::string& textureLocation);
 
-
-
-Window& windowHandler = Window::getInstance(SCR_WIDTH, SCR_HEIGHT, "NEW OPENGL IMP");
-
-Camera mainCamera{ windowHandler };
-
-KeyInput mainKeyInput = KeyInput({ GLFW_KEY_ESCAPE, GLFW_KEY_RIGHT, GLFW_KEY_LEFT, GLFW_KEY_DOWN, GLFW_KEY_UP, GLFW_KEY_F, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_SPACE, GLFW_KEY_C });
-
-
-//DELTA TIME
-double deltaTime = 0.0f;
-double lastFrame = 0.0f;
-
-
-Renderer::Renderer()
+namespace global
 {
+	//zero initialization
+	double g_deltaTime{};
+	double g_lastFrame{};
+}
+
+
+Renderer::Renderer() :
+	mainKeyInput{ {GLFW_KEY_ESCAPE, GLFW_KEY_RIGHT, GLFW_KEY_LEFT, GLFW_KEY_DOWN, GLFW_KEY_UP, GLFW_KEY_F, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_SPACE, GLFW_KEY_C } },
+	mainCamera{ windowHandler }
+{
+	
+
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -80,10 +74,10 @@ Renderer::Renderer()
 	std::vector<Vertex> cubeVertices = {
 		// Positions								Normals						Texture coord            Colors
 		// front face
-		Vertex{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(),				glm::vec3(1.0f, 0.0f, 0.0f) },
-		Vertex{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),		glm::vec3(1.0f, 0.0f, 0.0f) },
-		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),		glm::vec3(1.0f, 0.0f, 0.0f) },
-		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f),	glm::vec2(),				glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f,  0.5f),	glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),		glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f),	glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),		glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f),	glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 0.0f, 0.0f) },
 		//back face
 		Vertex{ glm::vec3(-0.5f,  -0.5f,  -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 1.0f, 0.0f) },
 		Vertex{ glm::vec3(0.5f,  -0.5f,  -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 1.0f, 0.0f) },
@@ -151,26 +145,35 @@ void Renderer::init()
 {
 
 
-
 	// render loop
 	while (!glfwWindowShouldClose(windowHandler.getWindow()))
 	{
 		//TIME
+
 		double currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		global::g_deltaTime = currentFrame - global::g_lastFrame;
+		global::g_lastFrame = currentFrame;
 
 
 
 		// input
 		// -----
 		mainKeyInput.setupKeyInputs(windowHandler.getWindow());
-		processInput(mainKeyInput, windowHandler);
+		processInput(mainKeyInput, windowHandler, mainCamera);
+
+		glfwSetWindowUserPointer(windowHandler.getWindow(), &mainCamera);
 
 		//MOUSE
-		glfwSetCursorPosCallback(windowHandler.getWindow(), mouseMovementCallback);
-		glfwSetScrollCallback(windowHandler.getWindow(), mouseScrollCallback);
-
+		glfwSetCursorPosCallback(windowHandler.getWindow(), [](GLFWwindow* window, double x, double y) //lamba function implementation
+			{
+				if (Camera* cam = static_cast<Camera*>(glfwGetWindowUserPointer(window)))
+					cam->processMouseMovementInput(window, x, y);
+			});
+		glfwSetScrollCallback(windowHandler.getWindow(), [](GLFWwindow* window, double x, double y)
+			{
+				if (Camera* cam = static_cast<Camera*>(glfwGetWindowUserPointer(window)))
+					cam->processMouseScrollInput(window, x, y);
+			});
 
 
 		glEnable(GL_DEPTH_TEST);
@@ -234,12 +237,7 @@ void Renderer::init()
 		}
 
 		glBindVertexArray(0);
-		//END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE 
 
-		/*
-		* The glDrawElements function takes its indices from the EBO currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
-		* This means we have to bind the corresponding EBO each time we want to render an object with indices which again is a bit cumbersome.
-		*/
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -255,7 +253,7 @@ void Renderer::init()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(KeyInput& keyInput, Window& window)
+void processInput(KeyInput& keyInput, Window& window, Camera& cam)
 {
 
 	if (keyInput.getKeyState(GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -273,29 +271,29 @@ void processInput(KeyInput& keyInput, Window& window)
 
 	if ((keyInput.isKeyDown(GLFW_KEY_RIGHT)) || (keyInput.isKeyDown(GLFW_KEY_D)))
 	{
-		mainCamera.processKeyboardInput(RIGHT,deltaTime);
+		cam.processKeyboardInput(RIGHT,global::g_deltaTime);
 	}
 	else if ((keyInput.isKeyDown(GLFW_KEY_LEFT)) || (keyInput.isKeyDown(GLFW_KEY_A)))
 	{
-		mainCamera.processKeyboardInput(LEFT, deltaTime);
+		cam.processKeyboardInput(LEFT, global::g_deltaTime);
 	}
 
 	if ((keyInput.isKeyDown(GLFW_KEY_UP)|| (keyInput.isKeyDown(GLFW_KEY_W))))
 	{
-		mainCamera.processKeyboardInput(FORWARD, deltaTime);
+		cam.processKeyboardInput(FORWARD, global::g_deltaTime);
 	}
 	else if ((keyInput.isKeyDown(GLFW_KEY_DOWN)) || (keyInput.isKeyDown(GLFW_KEY_S)))
 	{
-		mainCamera.processKeyboardInput(BACKWARD, deltaTime);
+		cam.processKeyboardInput(BACKWARD, global::g_deltaTime);
 	}
 
 	if ((keyInput.isKeyDown(GLFW_KEY_SPACE)))
 	{
-		mainCamera.processKeyboardInput(UP, deltaTime);
+		cam.processKeyboardInput(UP, global::g_deltaTime);
 	}
 	else if ((keyInput.isKeyDown(GLFW_KEY_C)))
 	{
-		mainCamera.processKeyboardInput(DOWN, deltaTime);
+		cam.processKeyboardInput(DOWN, global::g_deltaTime);
 	}
 }
 
@@ -340,19 +338,7 @@ unsigned int CreateTexture(const std::string& textureLocation)
 	return texture;
 }
 
-void mouseMovementCallback(GLFWwindow* window, double xpos, double ypos)
-{
-	mainCamera.processMouseMovementInput(window, xpos, ypos);
 
-
-}
-
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	mainCamera.processMouseScrollInput(window, xoffset, yoffset);
-
-
-}
 
 
 

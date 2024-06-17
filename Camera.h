@@ -65,7 +65,7 @@ public:
 
 	void pointCameraToTarget(const glm::vec3& pTarget);
 
-	void processKeyboardInput(Camera_Movement movement, double deltaTime);
+	void processKeyboardInput(Camera_Movement movement, double g_deltaTime);
 	void processMouseMovementInput(GLFWwindow* window, double xpos, double ypos);
 	void processMouseScrollInput(GLFWwindow* window, double xoffset, double yoffset);
 

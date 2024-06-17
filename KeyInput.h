@@ -10,15 +10,6 @@ public:
     static void setupKeyInputs(GLFWwindow* window);
 
 
-private:
-    // The GLFW callback for key events.  Sends events to all KeyInput instances
-    static void callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-   
-    // Keep a list of all KeyInput instances and notify them all of key events
-    static std::vector<KeyInput*> instances;
-
-
-public:
     // Takes a list of which keys to keep state for
     KeyInput(std::vector<int> keysToMonitor);
     ~KeyInput();
@@ -29,14 +20,19 @@ public:
     //get simpler key state that is true only if the key is pressed
     bool isKeyDown(int key);
 
-
-
 private:
+    // The GLFW callback for key events.  Sends events to all KeyInput instances
+    static void callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+
     // Used internally to update key states.  Called by the GLFW callback.
     void setKeyState(int key, int currentAction);
+
+private:
     // Map from monitored keyes to their pressed states
     std::map<int, int> keys;
-
+    // Keep a list of all KeyInput instances and notify them all of key events
+    static std::vector<KeyInput*> instances;
 
 
 
