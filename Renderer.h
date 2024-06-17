@@ -1,4 +1,5 @@
 #pragma once
+#include "CommonHeaders.h"
 #include <glad/glad.h>
 
 #include "KeyInput.h"
@@ -12,7 +13,7 @@
 
 
 
-#include "CommonHeaders.h"
+
 
 
 // settings
@@ -27,7 +28,13 @@ public:
 
 private:
 	void init();
-	std::map<Mesh, Shader> meshShaderMap;
 
+	std::vector<Mesh> loadedMeshes;
+	std::vector<Shader> loadedShaders;
+
+	std::vector<glm::vec3> pyramidPositions = {
+		glm::vec3(10.0f,  0.0f,  0.0f),
+		glm::vec3(6.0f,  0.0f,  0.0f)
+	};
 
 };

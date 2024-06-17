@@ -9,14 +9,12 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     setupMesh();
 }
 
-void Mesh::draw(Shader& shader, bool drawArrays)
+void Mesh::draw(Shader& shader)
 {
 	glBindVertexArray(mVAO);
 
-	if(drawArrays)
-		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(mVertices.size()));
-	else
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mIndices.size()), GL_UNSIGNED_INT, 0);
+	//glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(mVertices.size()));
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mIndices.size()), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 }
@@ -44,11 +42,20 @@ void Mesh::setupMesh()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Position));
 	glEnableVertexAttribArray(0);
 	//Normals
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex,Normal));
-	glEnableVertexAttribArray(1);
+	if(hasNormals)
+	{
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex,Normal));
+		glEnableVertexAttribArray(1);
+	}
 	//Texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-	glEnableVertexAttribArray(2);
+	if(hasTextures)
+	{
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+		glEnableVertexAttribArray(2);
+	}
+	//Colors
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Colors));
+	glEnableVertexAttribArray(3);
 
 	glBindVertexArray(0);
 }

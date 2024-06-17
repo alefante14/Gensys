@@ -5,7 +5,7 @@ void Model::Draw(Shader& shader)
 {
 	for (unsigned int i = 0; i < mMeshes.size(); i++)
 	{
-		mMeshes[i].draw(shader, true);  //check this later
+		mMeshes[i].draw(shader);  //check this later
 	}
 }
 

@@ -1,7 +1,6 @@
-#define STB_IMAGE_IMPLEMENTATION
-#define GLM_ENABLE_EXPERIMENTAL
-
 #include "Renderer.h"
+
+
 
 void mouseMovementCallback(GLFWwindow* window, double xpos, double ypos);
 void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
@@ -43,110 +42,26 @@ Renderer::Renderer()
 	ShaderProgramSource lightSource = Shader::parse("Shaders/light.shader");
 	Shader lightShaderProgram = Shader(lightSource.VertexSource, lightSource.FragmentSource);
 
+	loadedShaders.push_back(textureShaderProgram);
+	loadedShaders.push_back(lightShaderProgram);
+	loadedShaders.push_back(lightReflectShaderProgram);
 
-	//cube
 
-	float cubeVertices[] = {
-		//positions				colors			texCoord			normals
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	 0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	 0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, -1.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	 0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	 0.0f,  0.0f, 1.0f,
 
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	-1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	-1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	-1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	-1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	-1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	-1.0f,  0.0f,  0.0f,
-
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	1.0f,  0.0f,  0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f, -1.0f,  0.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f,  1.0f,  0.0f
-	};
-
-	/*
-	float cubeVertices[] = {
-		// positions           // colors          // texture coords
-		-0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 1.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-	};
-	*/
-
-	float pyramidVertices[] = {
-		// Positions          // Colors
+	std::vector<Vertex> pyramidVertices = {
+		// Positions							Normals      Texture coord            Colors
 		// Base
-		-0.5f,  0.0f, -0.5f,  1.0f, 1.0f, 0.0f,
-		 0.5f,  0.0f, -0.5f,  1.0f, 1.0f, 0.0f,
-		 0.5f,  0.0f,  0.5f,  1.0f, 1.0f, 0.0f,
-		-0.5f,  0.0f,  0.5f,  1.0f, 1.0f, 0.0f,
-		// Apex
-		 0.0f,  0.8f,  0.0f,  0.0f, 1.0f, 0.0f
+		Vertex{ glm::vec3(- 0.5f,  0.0f, -0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.0f, -0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.0f,  0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.0f,  0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.0f,  0.8f,  0.0f), glm::vec3(), glm::vec2(), glm::vec3(0.0f, 1.0f, 0.0f) },
+
+
 	};
 
-
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
-
-	glm::vec3 pyramidPositions[] = {
-	glm::vec3(10.0f,  0.0f,  0.0f),
-	glm::vec3(6.0f,  0.0f,  0.0f)
-	};
-
-	//Indices MUST be unsigned 
-	unsigned int cubeIndices[] = {
-		0, 1, 2, 2, 3, 0, // front face
-		4, 5, 6, 6, 7, 4, // back face
-		0, 1, 5, 5, 4, 0, // bottom face
-		2, 3, 7, 7, 6, 2, // top face
-		0, 3, 7, 7, 4, 0, // left face
-		1, 2, 6, 6, 5, 1  // right face
-	};
-
-
-	unsigned int pyramidIndices[] = {
+	std::vector<unsigned int> pyramidIndices = {
 		// Base face (quadrilateral)
 		0, 1, 2,   // Triangle 1 of the base (1-2-3)
 		0, 2, 3,   // Triangle 2 of the base (1-3-4)
@@ -158,130 +73,13 @@ Renderer::Renderer()
 		3, 0, 4    // Face 4 (4-1-5)
 	};
 
-
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) Objects, and then configure vertex attributes(s).
-	/*
-		// create object
-		unsigned int objectId = 0;
-		glGenObject(1, &objectId);
-		// bind/assign object to context
-		glBindObject(GL_WINDOW_TARGET, objectId);
-		// set options of object currently bound to GL_WINDOW_TARGET
-		glSetObjectOption(GL_WINDOW_TARGET, GL_OPTION_WINDOW_WIDTH,  800);
-		glSetObjectOption(GL_WINDOW_TARGET, GL_OPTION_WINDOW_HEIGHT, 600);
-		// set context target back to default
-		glBindObject(GL_WINDOW_TARGET, 0);
-
-	****************************************************************************************************************************************************************************
-
-	VAO = Vertex Array Object
-		Raggruppa la configurazione dei vertex attributes e i buffer bindings
-		Si genera con glGenVertexArrays, si binda con glBindVertexArray e si elimina con glDeleteVertexArrays
-
-	VBO = Vertex Buffer Object
-		Un buffer nella GPU che mantiene i vertex data che verranno usati dal vertex shader
-		Si binda con glBindBuffer, poi si usa glBufferData per mandare i dati alla GPU e si elimina con glDeleteBuffers
-
-	EBO = Element Buffer Object
-		Usato per mantenere gli indici che referenziaano i vertici in un VBO.
-
-		Si genera con glGenBuffers, si binda con glBindBuffer e si eleimina con glDeleteBuffers
-
-	*/
-
-
-	unsigned int  VAO; //Vertex Array Object
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	std::vector<Texture> tex;
+	Mesh pyramid{ pyramidVertices, pyramidIndices, tex };
+	loadedMeshes.push_back(pyramid);
 
 
 
-	unsigned int VBO;  //Vertex Buffer Object
-	glGenBuffers(1, &VBO);  //Generate Buffer with ID=1
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);//Bind buffer with proper type
-	/*
-	GL_STREAM_DRAW: the data is set only once and used by the GPU at most a few times.
-	GL_STATIC_DRAW: the data is set only once and used many times.
-	GL_DYNAMIC_DRAW: the data is changed a lot and used many times.
-	*/
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);  //copy data into buffer
-
-
-	//We are describing the layout of our vertex attributes
-	//Positions
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//Colors
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	//Texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-	//Normals
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	glEnableVertexAttribArray(3);
-
-
-	unsigned int EBO;  //Element Buffer Object
-	glGenBuffers(1, &EBO);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
-
-
-	unsigned int lightVAO;
-	glGenVertexArrays(1, &lightVAO);
-	glBindVertexArray(lightVAO);
-
-	unsigned int lightVBO;
-	glGenBuffers(1, &lightVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(pyramidVertices), pyramidVertices, GL_STATIC_DRAW);  //copy data into buffer
-
-
-	//We are describing the layout of our vertex attributes
-	//Positions
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//Colors
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	unsigned int lightEBO;  //Element Buffer Object
-	glGenBuffers(1, &lightEBO);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(pyramidIndices), pyramidIndices, GL_STATIC_DRAW);
-
-	//reset
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-
-	// WORK HERE ********************************************************************************************************************************************************
-	//create pyramid mesh
 	
-
-
-
-	// END WORK HERE ********************************************************************************************************************************************************
-
-
-
-
-	stbi_set_flip_vertically_on_load(true);  //to flip up every import
-	unsigned int containerTexture = CreateTexture("Textures/wall.jpg");
-	unsigned int faceTexture = CreateTexture("Textures/bird.png");
-
-
-	textureShaderProgram.use(); // don't forget to activate the shader before setting uniforms!  
-	glUniform1i(glGetUniformLocation(textureShaderProgram.GetID(), "ourTexture1"), 0); //set it manually
-	glUniform1i(glGetUniformLocation(textureShaderProgram.GetID(), "ourTexture2"), 1);
-
-
 	//view matrix to move the camera
 	mainCamera.pointCameraToTarget(glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -312,6 +110,7 @@ void Renderer::init()
 		lastFrame = currentFrame;
 
 
+
 		// input
 		// -----
 		mainKeyInput.setupKeyInputs(windowHandler.getWindow());
@@ -330,90 +129,26 @@ void Renderer::init()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glActiveTexture(GL_TEXTURE0);  //activate the texture unit first before binding texture
-		glBindTexture(GL_TEXTURE_2D, containerTexture);
-
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, faceTexture);
-
-
-		textureShaderProgram.use();		
-		textureShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
-		textureShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO);
-		glBindVertexArray(VAO);
-
-		for (unsigned int i = 0; i < 10; i++)
-		{
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]);
-			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f * (i + 1)), glm::vec3(0.5f, 1.0f, 0.0f));  //rotating on X-Axis
-
-			textureShaderProgram.setUniformMatrix4("model", model);
-
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-		}
-
-		//glBindVertexArray(0);
-
-		//WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE WORK HERE 
-
-
-		//draw light cube
-
-		lightShaderProgram.use();
-
-		lightShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
-		lightShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
-
-
-		glm::mat4 lightCubeModel = glm::mat4(1.0f);
-		lightCubeModel = glm::translate(lightCubeModel, glm::vec3(8.0f,0.0f, -2.0f));
-		lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2f));
-
-		lightShaderProgram.setUniformMatrix4("model", lightCubeModel);
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);  //drawing cube
-		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	
 
 		//Draw light reflect meshes
-		lightReflectShaderProgram.use();
+		loadedShaders.back().use();
+		loadedShaders.back().setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
+		loadedShaders.back().setUniformVec3("lightPos",8.0f, 0.0f, -2.0f);  //same pos as light cube
+		loadedShaders.back().setUniformVec3("viewPos", mainCamera.getPosition());
 
-		lightReflectShaderProgram.setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
-		lightReflectShaderProgram.setUniformVec3("lightPos",8.0f, 0.0f, -2.0f);  //same pos as light cube
-		lightReflectShaderProgram.setUniformVec3("viewPos", mainCamera.getPosition()); 
-
-		lightReflectShaderProgram.setUniformMatrix4("view", mainCamera.getViewMatrix());
-		lightReflectShaderProgram.setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightVBO);
-
-		//draw cube reflecting lights
-		glm::mat4 cubeModel = glm::mat4(1.0f);
-		cubeModel = glm::translate(cubeModel, glm::vec3(9.0f, 1.0f, -3.0f));
-		cubeModel = glm::scale(cubeModel, glm::vec3(0.5f));
-		cubeModel = glm::rotate(cubeModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
-
-		lightReflectShaderProgram.setUniformMatrix4("model", cubeModel);
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);  //drawing cube
-
-		glBindVertexArray(lightVAO);
+		loadedShaders.back().setUniformMatrix4("view", mainCamera.getViewMatrix());
+		loadedShaders.back().setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
 
 		//Draw pyramids
-		for (unsigned int i = 0; i < 2; i++)
+		for (unsigned int i = 0; i < pyramidPositions.size(); i++)
 		{
 			glm::mat4 pyramidModel = glm::mat4(1.0f);
 			pyramidModel = glm::translate(pyramidModel, pyramidPositions[i]);
 			pyramidModel = glm::rotate(pyramidModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
-			lightReflectShaderProgram.setUniformMatrix4("model", pyramidModel);
+			loadedShaders.back().setUniformMatrix4("model", pyramidModel);
 		
-			glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);  //faster
+			loadedMeshes.back().draw(loadedShaders.back());
 		}
 
 
@@ -435,8 +170,6 @@ void Renderer::init()
 
 
 	glfwTerminate();
-	return 0;
-
 
 }
 

@@ -7,6 +7,7 @@ struct Vertex {
 	glm::vec3 Position;
 	glm::vec3 Normal;
 	glm::vec2 TexCoords;
+	glm::vec3 Colors;
 };
 
 struct Texture {
@@ -22,12 +23,15 @@ class Mesh {
 		std::vector<Texture>		mTextures;
 
 		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-		void draw(Shader& shader, bool drawArrays);
+		void draw(Shader& shader);
 	private:
 		//  render data
 		unsigned int mVAO, mVBO, mEBO;
 
 		void setupMesh();
+
+		bool hasNormals = false;
+		bool hasTextures = false;
 };
 
 
