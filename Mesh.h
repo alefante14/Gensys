@@ -30,8 +30,6 @@ class Mesh {
 
 		void setupMesh();
 
-		bool hasNormals = false;
-		bool hasTextures = false;
 };
 
 

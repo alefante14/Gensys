@@ -1,6 +1,12 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "Shader.h"
 
+Shader::Shader()
+{
+	ShaderProgramSource basic =  Shader::parse("Shaders/basic.shader");
+	shaderID = create(basic.VertexSource, basic.FragmentSource);
+}
+
 Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
 {
 	shaderID = create(vertexShader, fragmentShader);

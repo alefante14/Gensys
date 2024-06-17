@@ -30,7 +30,8 @@ private:
 	void init();
 
 	std::vector<Mesh> loadedMeshes;
-	std::vector<Shader> loadedShaders;
+
+	std::map<std::string, Shader> loadedShaders;
 
 	std::vector<glm::vec3> pyramidPositions = {
 		glm::vec3(10.0f,  0.0f,  0.0f),

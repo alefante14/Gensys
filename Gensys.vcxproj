@@ -168,7 +168,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="Shaders\Basic.shader" />
+    <None Include="Shaders\basic.shader" />
+    <None Include="Shaders\Texture.shader" />
     <None Include="Shaders\light.shader" />
     <None Include="Shaders\lightReflect.shader" />
   </ItemGroup>

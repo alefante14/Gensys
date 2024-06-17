@@ -33,30 +33,33 @@ Renderer::Renderer()
 	}
 
 	//taking and compiling shaders
-	ShaderProgramSource textureSource = Shader::parse("Shaders/Basic.shader");
-	Shader textureShaderProgram = Shader(textureSource.VertexSource, textureSource.FragmentSource);
+	ShaderProgramSource textureSource = Shader::parse("Shaders/Texture.shader");
+	loadedShaders["texture"] =  Shader(textureSource.VertexSource, textureSource.FragmentSource);
 
 	ShaderProgramSource lightReflectSource = Shader::parse("Shaders/lightReflect.shader");
-	Shader lightReflectShaderProgram = Shader(lightReflectSource.VertexSource, lightReflectSource.FragmentSource);
+	loadedShaders["lightReflect"] = Shader(lightReflectSource.VertexSource, lightReflectSource.FragmentSource);
+
 
 	ShaderProgramSource lightSource = Shader::parse("Shaders/light.shader");
-	Shader lightShaderProgram = Shader(lightSource.VertexSource, lightSource.FragmentSource);
+	loadedShaders["light"] = Shader(lightSource.VertexSource, lightSource.FragmentSource);
 
-	loadedShaders.push_back(textureShaderProgram);
-	loadedShaders.push_back(lightShaderProgram);
-	loadedShaders.push_back(lightReflectShaderProgram);
+
+	ShaderProgramSource basicSource = Shader::parse("Shaders/basic.shader");
+	loadedShaders["basic"] = Shader(basicSource.VertexSource, basicSource.FragmentSource);
+
+
 
 
 
 
 	std::vector<Vertex> pyramidVertices = {
-		// Positions							Normals      Texture coord            Colors
+		// Positions								Normals						Texture coord            Colors
 		// Base
-		Vertex{ glm::vec3(- 0.5f,  0.0f, -0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
-		Vertex{ glm::vec3(0.5f,  0.0f, -0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
-		Vertex{ glm::vec3(0.5f,  0.0f,  0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
-		Vertex{ glm::vec3(-0.5f,  0.0f,  0.5f), glm::vec3(), glm::vec2(), glm::vec3(1.0f, 1.0f, 0.0f) },
-		Vertex{ glm::vec3(0.0f,  0.8f,  0.0f), glm::vec3(), glm::vec2(), glm::vec3(0.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(- 0.5f,  0.0f, -0.5f), glm::vec3(), glm::vec2(0.0f,0.0f), glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.0f, -0.5f), glm::vec3(), glm::vec2(0.0f,0.0f),  glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.0f,  0.5f), glm::vec3(), glm::vec2(0.0f,0.0f),  glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.0f,  0.5f), glm::vec3(), glm::vec2(0.0f,0.0f), glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.0f,  0.8f,  0.0f), glm::vec3(), glm::vec2(0.0f,0.0f),  glm::vec3(0.0f, 1.0f, 0.0f) }
 
 
 	};
@@ -76,7 +79,6 @@ Renderer::Renderer()
 	std::vector<Texture> tex;
 	Mesh pyramid{ pyramidVertices, pyramidIndices, tex };
 	loadedMeshes.push_back(pyramid);
-
 
 
 	
@@ -132,13 +134,10 @@ void Renderer::init()
 	
 
 		//Draw light reflect meshes
-		loadedShaders.back().use();
-		loadedShaders.back().setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
-		loadedShaders.back().setUniformVec3("lightPos",8.0f, 0.0f, -2.0f);  //same pos as light cube
-		loadedShaders.back().setUniformVec3("viewPos", mainCamera.getPosition());
+		loadedShaders["basic"].use();
 
-		loadedShaders.back().setUniformMatrix4("view", mainCamera.getViewMatrix());
-		loadedShaders.back().setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
+		loadedShaders["basic"].setUniformMatrix4("view", mainCamera.getViewMatrix());
+		loadedShaders["basic"].setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
 
 		//Draw pyramids
 		for (unsigned int i = 0; i < pyramidPositions.size(); i++)
@@ -146,9 +145,9 @@ void Renderer::init()
 			glm::mat4 pyramidModel = glm::mat4(1.0f);
 			pyramidModel = glm::translate(pyramidModel, pyramidPositions[i]);
 			pyramidModel = glm::rotate(pyramidModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
-			loadedShaders.back().setUniformMatrix4("model", pyramidModel);
+			loadedShaders["basic"].setUniformMatrix4("model", pyramidModel);
 		
-			loadedMeshes.back().draw(loadedShaders.back());
+			loadedMeshes.back().draw(loadedShaders["basic"]);
 		}
 
 

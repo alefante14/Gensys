@@ -27,6 +27,8 @@ private:
 
 
 public:
+	Shader();
+
 	Shader(const std::string& vertexShader, const std::string& fragmentShader);
 
 	static ShaderProgramSource parse(const std::string& filepath);
