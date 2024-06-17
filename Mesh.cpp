@@ -1,5 +1,12 @@
 #include "Mesh.h"
 
+
+
+Mesh::Mesh()
+{
+	//DO DEFAULT MESH
+}
+
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 {
     this->mVertices = vertices;

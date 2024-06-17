@@ -29,13 +29,22 @@ public:
 private:
 	void init();
 
-	std::vector<Mesh> loadedMeshes;
+	std::map<std::string, Mesh> loadedMeshes;
 
 	std::map<std::string, Shader> loadedShaders;
 
 	std::vector<glm::vec3> pyramidPositions = {
 		glm::vec3(10.0f,  0.0f,  0.0f),
 		glm::vec3(6.0f,  0.0f,  0.0f)
+	};
+
+	std::vector<glm::vec3> lightCubePositions = {
+		glm::vec3(0.0f,  2.0f,  0.0f)
+	};
+
+	std::vector<glm::vec3> reflectLightCubePositions = {
+		glm::vec3(2.0f,  0.0f,  0.0f),
+		glm::vec3(-3.0f,  0.0f,  -3.0f)
 	};
 
 };

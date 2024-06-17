@@ -48,10 +48,6 @@ Renderer::Renderer()
 	loadedShaders["basic"] = Shader(basicSource.VertexSource, basicSource.FragmentSource);
 
 
-
-
-
-
 	std::vector<Vertex> pyramidVertices = {
 		// Positions								Normals						Texture coord            Colors
 		// Base
@@ -78,10 +74,63 @@ Renderer::Renderer()
 
 	std::vector<Texture> tex;
 	Mesh pyramid{ pyramidVertices, pyramidIndices, tex };
-	loadedMeshes.push_back(pyramid);
+	loadedMeshes["pyramid"] = pyramid;
 
 
-	
+	std::vector<Vertex> cubeVertices = {
+		// Positions								Normals						Texture coord            Colors
+		// front face
+		Vertex{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(),				glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),		glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),		glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 0.0f, 0.0f) },
+		//back face
+		Vertex{ glm::vec3(-0.5f,  -0.5f,  -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  -0.5f,  -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  -0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f, 1.0f, 0.0f) },
+		//left face
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f,  0.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  -0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f),  glm::vec3(1.0f,  0.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  -0.5f,  -0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,  0.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  -0.5f,  0.5f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f),  glm::vec3(1.0f,  0.0f,  0.0f) },
+		//right face
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f),		glm::vec3(1.0f,  0.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  -0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f,  0.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  -0.5f,  -0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f,  0.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  -0.5f,  0.5f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(1.0f,  0.0f,  0.0f) },
+		//bottom face
+		Vertex{ glm::vec3(-0.5f,  -0.5f,  -0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(0.0f,0.0f),  glm::vec3(0.0f,  1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  -0.5f,  -0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(0.0f,  1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  -0.5f,  0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(0.0f,  1.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  -0.5f,  0.5f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(0.0f,  1.0f,  0.0f) },
+		//top face
+		Vertex{ glm::vec3(-0.5f,  0.5f,  -0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(0.0f,  1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  -0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(0.0f,  1.0f,  0.0f) },
+		Vertex{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,0.0f),		glm::vec3(0.0f,  1.0f,  0.0f) },
+		Vertex{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f,0.0f),	glm::vec3(0.0f,  1.0f,  0.0f) }
+	};
+
+	std::vector<unsigned int> cubeIndices = {
+		// front face
+		0, 1, 2, 2, 3, 0,
+		// back face
+		4, 5, 6, 6, 7, 4,
+		// left face
+		8, 9, 10, 10, 11, 8,
+		// right face
+		12, 13, 14, 14, 15, 12,
+		// bottom face
+		16, 17, 18, 18, 19, 16,
+		// top face
+		20, 21, 22, 22, 23, 20
+	};
+
+
+	Mesh cube{ cubeVertices, cubeIndices, tex };
+	loadedMeshes["cube"] = cube;
+
+
 	//view matrix to move the camera
 	mainCamera.pointCameraToTarget(glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -133,7 +182,7 @@ void Renderer::init()
 
 	
 
-		//Draw light reflect meshes
+		//Draw basic pyramid
 		loadedShaders["basic"].use();
 
 		loadedShaders["basic"].setUniformMatrix4("view", mainCamera.getViewMatrix());
@@ -147,11 +196,42 @@ void Renderer::init()
 			pyramidModel = glm::rotate(pyramidModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
 			loadedShaders["basic"].setUniformMatrix4("model", pyramidModel);
 		
-			loadedMeshes.back().draw(loadedShaders["basic"]);
+			loadedMeshes["pyramid"].draw(loadedShaders["basic"]);
 		}
 
+		//Draw light cubes
+		loadedShaders["light"].use();
 
-		//glDrawArrays(GL_TRIANGLES, 0, 5);
+		loadedShaders["light"].setUniformMatrix4("view", mainCamera.getViewMatrix());
+		loadedShaders["light"].setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
+		for (unsigned int i = 0; i < lightCubePositions.size(); i++)
+		{
+			glm::mat4 lightCubeModel = glm::mat4(1.0f);
+			lightCubeModel = glm::translate(lightCubeModel, lightCubePositions[i]);
+			lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2f));
+			loadedShaders["light"].setUniformMatrix4("model", lightCubeModel);
+
+			loadedMeshes["cube"].draw(loadedShaders["light"]);
+		}
+
+		//Draw light reflect cubes
+		loadedShaders["lightReflect"].use();
+
+		loadedShaders["lightReflect"].setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
+		loadedShaders["lightReflect"].setUniformVec3("lightPos", lightCubePositions[0]);  //same pos as light cube
+		loadedShaders["lightReflect"].setUniformVec3("viewPos", mainCamera.getPosition());
+
+		loadedShaders["lightReflect"].setUniformMatrix4("view", mainCamera.getViewMatrix());
+		loadedShaders["lightReflect"].setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
+		for (unsigned int i = 0; i < reflectLightCubePositions.size(); i++)
+		{
+			glm::mat4 cubeModel = glm::mat4(1.0f);
+			cubeModel = glm::translate(cubeModel, reflectLightCubePositions[i]);
+			cubeModel = glm::rotate(cubeModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
+			loadedShaders["lightReflect"].setUniformMatrix4("model", cubeModel);
+
+			loadedMeshes["cube"].draw(loadedShaders["lightReflect"]);
+		}
 
 		glBindVertexArray(0);
 		//END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE END WORK HERE 
