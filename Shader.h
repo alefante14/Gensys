@@ -21,7 +21,7 @@ struct ShaderProgramSource
 class Shader
 {
 private:
-	unsigned int shaderID;
+	unsigned int mShaderID;
 
 	unsigned int create(const std::string& vertexShader, const std::string& fragmentShader);
 

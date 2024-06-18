@@ -16,7 +16,7 @@ namespace global
 
 Renderer::Renderer() :
 	mainKeyInput{ {GLFW_KEY_ESCAPE, GLFW_KEY_RIGHT, GLFW_KEY_LEFT, GLFW_KEY_DOWN, GLFW_KEY_UP, GLFW_KEY_F, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_SPACE, GLFW_KEY_C } },
-	mainCamera{ windowHandler }
+	mMainCamera{ mWindowHandler }
 {
 	
 
@@ -28,18 +28,18 @@ Renderer::Renderer() :
 
 	//taking and compiling shaders
 	ShaderProgramSource textureSource = Shader::parse("Shaders/Texture.shader");
-	loadedShaders["texture"] =  Shader(textureSource.VertexSource, textureSource.FragmentSource);
+	mLoadedShaders["texture"] =  Shader(textureSource.VertexSource, textureSource.FragmentSource);
 
 	ShaderProgramSource lightReflectSource = Shader::parse("Shaders/lightReflect.shader");
-	loadedShaders["lightReflect"] = Shader(lightReflectSource.VertexSource, lightReflectSource.FragmentSource);
+	mLoadedShaders["lightReflect"] = Shader(lightReflectSource.VertexSource, lightReflectSource.FragmentSource);
 
 
 	ShaderProgramSource lightSource = Shader::parse("Shaders/light.shader");
-	loadedShaders["light"] = Shader(lightSource.VertexSource, lightSource.FragmentSource);
+	mLoadedShaders["light"] = Shader(lightSource.VertexSource, lightSource.FragmentSource);
 
 
 	ShaderProgramSource basicSource = Shader::parse("Shaders/basic.shader");
-	loadedShaders["basic"] = Shader(basicSource.VertexSource, basicSource.FragmentSource);
+	mLoadedShaders["basic"] = Shader(basicSource.VertexSource, basicSource.FragmentSource);
 
 
 	std::vector<Vertex> pyramidVertices = {
@@ -68,7 +68,7 @@ Renderer::Renderer() :
 
 	std::vector<Texture> tex;
 	Mesh pyramid{ pyramidVertices, pyramidIndices, tex };
-	loadedMeshes["pyramid"] = pyramid;
+	mLoadedMeshes["pyramid"] = pyramid;
 
 
 	std::vector<Vertex> cubeVertices = {
@@ -122,14 +122,14 @@ Renderer::Renderer() :
 
 
 	Mesh cube{ cubeVertices, cubeIndices, tex };
-	loadedMeshes["cube"] = cube;
+	mLoadedMeshes["cube"] = cube;
 
 
 	//view matrix to move the camera
-	mainCamera.pointCameraToTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+	mMainCamera.pointCameraToTarget(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	//MOUSE
-	glfwSetInputMode(windowHandler.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(mWindowHandler.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	init();
 }
@@ -146,7 +146,7 @@ void Renderer::init()
 
 
 	// render loop
-	while (!glfwWindowShouldClose(windowHandler.getWindow()))
+	while (!glfwWindowShouldClose(mWindowHandler.getWindow()))
 	{
 		//TIME
 
@@ -158,18 +158,18 @@ void Renderer::init()
 
 		// input
 		// -----
-		mainKeyInput.setupKeyInputs(windowHandler.getWindow());
-		processInput(mainKeyInput, windowHandler, mainCamera);
+		mainKeyInput.setupKeyInputs(mWindowHandler.getWindow());
+		processInput(mainKeyInput, mWindowHandler, mMainCamera);
 
-		glfwSetWindowUserPointer(windowHandler.getWindow(), &mainCamera);
+		glfwSetWindowUserPointer(mWindowHandler.getWindow(), &mMainCamera);
 
 		//MOUSE
-		glfwSetCursorPosCallback(windowHandler.getWindow(), [](GLFWwindow* window, double x, double y) //lamba function implementation
+		glfwSetCursorPosCallback(mWindowHandler.getWindow(), [](GLFWwindow* window, double x, double y) //lamba function implementation
 			{
 				if (Camera* cam = static_cast<Camera*>(glfwGetWindowUserPointer(window)))
 					cam->processMouseMovementInput(window, x, y);
 			});
-		glfwSetScrollCallback(windowHandler.getWindow(), [](GLFWwindow* window, double x, double y)
+		glfwSetScrollCallback(mWindowHandler.getWindow(), [](GLFWwindow* window, double x, double y)
 			{
 				if (Camera* cam = static_cast<Camera*>(glfwGetWindowUserPointer(window)))
 					cam->processMouseScrollInput(window, x, y);
@@ -186,54 +186,54 @@ void Renderer::init()
 	
 
 		//Draw basic pyramid
-		loadedShaders["basic"].use();
+		mLoadedShaders["basic"].use();
 
-		loadedShaders["basic"].setUniformMatrix4("view", mainCamera.getViewMatrix());
-		loadedShaders["basic"].setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
+		mLoadedShaders["basic"].setUniformMatrix4("view", mMainCamera.getViewMatrix());
+		mLoadedShaders["basic"].setUniformMatrix4("projection", mMainCamera.getProjectionMatrix());
 
 		//Draw pyramids
-		for (unsigned int i = 0; i < pyramidPositions.size(); i++)
+		for (unsigned int i = 0; i < mPyramidPositions.size(); i++)
 		{
 			glm::mat4 pyramidModel = glm::mat4(1.0f);
-			pyramidModel = glm::translate(pyramidModel, pyramidPositions[i]);
+			pyramidModel = glm::translate(pyramidModel, mPyramidPositions[i]);
 			pyramidModel = glm::rotate(pyramidModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
-			loadedShaders["basic"].setUniformMatrix4("model", pyramidModel);
+			mLoadedShaders["basic"].setUniformMatrix4("model", pyramidModel);
 		
-			loadedMeshes["pyramid"].draw(loadedShaders["basic"]);
+			mLoadedMeshes["pyramid"].draw(mLoadedShaders["basic"]);
 		}
 
 		//Draw light cubes
-		loadedShaders["light"].use();
+		mLoadedShaders["light"].use();
 
-		loadedShaders["light"].setUniformMatrix4("view", mainCamera.getViewMatrix());
-		loadedShaders["light"].setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
-		for (unsigned int i = 0; i < lightCubePositions.size(); i++)
+		mLoadedShaders["light"].setUniformMatrix4("view", mMainCamera.getViewMatrix());
+		mLoadedShaders["light"].setUniformMatrix4("projection", mMainCamera.getProjectionMatrix());
+		for (unsigned int i = 0; i < mLightCubePositions.size(); i++)
 		{
 			glm::mat4 lightCubeModel = glm::mat4(1.0f);
-			lightCubeModel = glm::translate(lightCubeModel, lightCubePositions[i]);
+			lightCubeModel = glm::translate(lightCubeModel, mLightCubePositions[i]);
 			lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2f));
-			loadedShaders["light"].setUniformMatrix4("model", lightCubeModel);
+			mLoadedShaders["light"].setUniformMatrix4("model", lightCubeModel);
 
-			loadedMeshes["cube"].draw(loadedShaders["light"]);
+			mLoadedMeshes["cube"].draw(mLoadedShaders["light"]);
 		}
 
 		//Draw light reflect cubes
-		loadedShaders["lightReflect"].use();
+		mLoadedShaders["lightReflect"].use();
 
-		loadedShaders["lightReflect"].setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
-		loadedShaders["lightReflect"].setUniformVec3("lightPos", lightCubePositions[0]);  //same pos as light cube
-		loadedShaders["lightReflect"].setUniformVec3("viewPos", mainCamera.getPosition());
+		mLoadedShaders["lightReflect"].setUniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
+		mLoadedShaders["lightReflect"].setUniformVec3("lightPos", mLightCubePositions[0]);  //same pos as light cube
+		mLoadedShaders["lightReflect"].setUniformVec3("viewPos", mMainCamera.getPosition());
 
-		loadedShaders["lightReflect"].setUniformMatrix4("view", mainCamera.getViewMatrix());
-		loadedShaders["lightReflect"].setUniformMatrix4("projection", mainCamera.getProjectionMatrix());
-		for (unsigned int i = 0; i < reflectLightCubePositions.size(); i++)
+		mLoadedShaders["lightReflect"].setUniformMatrix4("view", mMainCamera.getViewMatrix());
+		mLoadedShaders["lightReflect"].setUniformMatrix4("projection", mMainCamera.getProjectionMatrix());
+		for (unsigned int i = 0; i < mReflectLightCubePositions.size(); i++)
 		{
 			glm::mat4 cubeModel = glm::mat4(1.0f);
-			cubeModel = glm::translate(cubeModel, reflectLightCubePositions[i]);
+			cubeModel = glm::translate(cubeModel, mReflectLightCubePositions[i]);
 			cubeModel = glm::rotate(cubeModel, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));  //rotating on X-Axis
-			loadedShaders["lightReflect"].setUniformMatrix4("model", cubeModel);
+			mLoadedShaders["lightReflect"].setUniformMatrix4("model", cubeModel);
 
-			loadedMeshes["cube"].draw(loadedShaders["lightReflect"]);
+			mLoadedMeshes["cube"].draw(mLoadedShaders["lightReflect"]);
 		}
 
 		glBindVertexArray(0);
@@ -241,7 +241,7 @@ void Renderer::init()
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
-		windowHandler.swapBuffer();
+		mWindowHandler.swapBuffer();
 		glfwPollEvents();
 	}
 

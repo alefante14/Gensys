@@ -18,21 +18,21 @@ enum Camera_Movement {
 };
 
 // Default camera values
-const float YAW = -90.0f;
-const float PITCH = 0.0f;
-const float SPEED = 10.0f;
-const float SENSITIVITY = 0.1f;
-const float FOV = 45.0f;
+const float YAW{ -90.0f };
+const float PITCH{ 0.0f };
+const float SPEED{ 10.0f };
+const float SENSITIVITY{ 0.1f };
+const float FOV{ 45.0f };
 
-const float MIN_FOV = 1.0f;
-const float MAX_FOV = 45.0f;
+const float MIN_FOV{ 1.0f };
+const float MAX_FOV{ 45.0f };
 
 
 
 class Camera
 {
 private:
-	Window& linkedWindow;
+	Window& mLinkedWindow;
 
 	glm::vec3 mFront;
 	glm::vec3 mUp;
@@ -40,9 +40,9 @@ private:
 	double mYaw;
 	double mPitch;
 	
-	bool firstMouse = true;
-	double lastX = static_cast<double>(linkedWindow.getWidth()) / 2;
-	double lastY = static_cast<double>(linkedWindow.getHeight()) / 2;
+	bool mFirstMouse = true;
+	double mLastMouseX = static_cast<double>(mLinkedWindow.getWidth()) / 2;
+	double mLastMouseY = static_cast<double>(mLinkedWindow.getHeight()) / 2;
 
 	glm::vec3 mPosition;
 	glm::vec3 mDirection;

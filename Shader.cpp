@@ -4,12 +4,12 @@
 Shader::Shader()
 {
 	ShaderProgramSource basic =  Shader::parse("Shaders/basic.shader");
-	shaderID = create(basic.VertexSource, basic.FragmentSource);
+	mShaderID = create(basic.VertexSource, basic.FragmentSource);
 }
 
 Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
 {
-	shaderID = create(vertexShader, fragmentShader);
+	mShaderID = create(vertexShader, fragmentShader);
 }
 
 ShaderProgramSource Shader::parse(const std::string& filepath)
@@ -80,7 +80,7 @@ unsigned int Shader::compile(unsigned int type, const std::string& source)
 
 unsigned int Shader::GetID()
 {
-	return shaderID;
+	return mShaderID;
 }
 
 void Shader::use()

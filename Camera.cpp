@@ -6,7 +6,7 @@ Camera::Camera(
 	float yaw, float pitch,
 	float speed, float mouseSensitivity, float fov) 
 	:
-	linkedWindow(window),
+	mLinkedWindow(window),
 	mPosition(Position), mFront(Front), mUp(Up), mDirection(direction),
 	mYaw(yaw), mPitch(pitch), 
 	mSpeed(speed), mMouseSensitivity(mouseSensitivity), mFov(fov)
@@ -45,17 +45,17 @@ void Camera::processKeyboardInput(Camera_Movement movement, double deltaTime)
 
 void Camera::processMouseMovementInput(GLFWwindow* window, double xpos, double ypos)
 {
-	if (firstMouse)
+	if (mFirstMouse)
 	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
+		mLastMouseX = xpos;
+		mLastMouseY = ypos;
+		mFirstMouse = false;
 	}
 
-	double xOffset = xpos - lastX;
-	double yOffset = lastY - ypos;
-	lastX = xpos;
-	lastY = ypos;
+	double xOffset = xpos - mLastMouseX;
+	double yOffset = mLastMouseY - ypos;
+	mLastMouseX = xpos;
+	mLastMouseY = ypos;
 
 	xOffset *= mMouseSensitivity;
 	yOffset *= mMouseSensitivity;
@@ -113,11 +113,11 @@ glm::mat4 Camera::getViewMatrix()
 
 glm::mat4 Camera::getProjectionMatrix()
 {
-	return glm::perspective(glm::radians(mFov), static_cast<float>(linkedWindow.getWidth()) / static_cast<float>(linkedWindow.getHeight()), 0.1f, 100.0f);
+	return glm::perspective(glm::radians(mFov), static_cast<float>(mLinkedWindow.getWidth()) / static_cast<float>(mLinkedWindow.getHeight()), 0.1f, 100.0f);
 }
 
 //NOT WORKING
 glm::mat4 Camera::getOrthoProjectionMatrix()
 {
-	return glm::ortho(0.0f, static_cast<float>(linkedWindow.getWidth()), 0.0f, static_cast<float>(linkedWindow.getHeight()), 0.1f, 100.0f);
+	return glm::ortho(0.0f, static_cast<float>(mLinkedWindow.getWidth()), 0.0f, static_cast<float>(mLinkedWindow.getHeight()), 0.1f, 100.0f);
 }

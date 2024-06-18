@@ -30,9 +30,9 @@ private:
 
 private:
     // Map from monitored keyes to their pressed states
-    std::map<int, int> keys;
+    std::map<int, int> mKeys;
     // Keep a list of all KeyInput instances and notify them all of key events
-    static std::vector<KeyInput*> instances;
+    static std::vector<KeyInput*> mInstances;
 
 
 

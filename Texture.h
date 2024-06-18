@@ -11,7 +11,7 @@
 class Texture
 {
 private:
-	static unsigned int currentTextureID;
+	static unsigned int mCurrentTextureID;
 public:
 	Texture(const std::string& textureLocation);
 };
